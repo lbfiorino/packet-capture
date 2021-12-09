@@ -32,7 +32,12 @@ if not os.access(args.out_dir, os.W_OK):
 # Load config with hosts and servers
 capture = configparser.ConfigParser()
 capture.read("capture.ini")
-                
+
+# Disable NIC Receive Offload
+os.system("ethtool -K "+args.iface+" gro off")
+os.system("ethtool -K "+args.iface+" lro off")
+
+
 try: 
 
     # command = "tcpdump -i "+iface+" -w "+pcap_file+" -U 2> /dev/null"
@@ -48,4 +53,9 @@ finally:
     print("Killing the processes...")
     # Kill all processes in group
     os.killpg(0, signal.SIGKILL)
+
+    # Enable NIC Receive Offload
+    os.system("ethtool -K "+args.iface+" gro on")
+    os.system("ethtool -K "+args.iface+" lro on")    
+
     exit()
