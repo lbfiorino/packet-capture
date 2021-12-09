@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import shlex, subprocess
 import time, os, psutil, signal
 

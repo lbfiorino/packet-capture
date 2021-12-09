@@ -1,11 +1,22 @@
+#!/usr/bin/python3
+
 import argparse, configparser
 import shlex, subprocess
 import sys, os, signal, psutil
 
-# Create new process group
+
+# This script must be run as root!
+if not os.geteuid()==0:
+    sys.exit('This script must be run as root!')
+
+
+# Create new process group to kill all process in group
 os.setpgrp()
 
+
+# Get working directory
 current_dir = os.getcwd()
+
 
 # Parser command-line options
 parser = argparse.ArgumentParser()
@@ -18,10 +29,12 @@ if len(sys.argv)==1:
      exit(1)
 args = parser.parse_args()
 
+
 # Check if network interface exist
 if (args.iface not in psutil.net_if_addrs().keys()):
     print("Error: Invalid Network Interface.\n")
     exit(1)
+
 
 # Check if output dir is writeable
 if not os.access(args.out_dir, os.W_OK):
@@ -32,6 +45,7 @@ if not os.access(args.out_dir, os.W_OK):
 # Load config with hosts and servers
 capture = configparser.ConfigParser()
 capture.read("capture.ini")
+
 
 # Disable NIC Receive Offload
 os.system("ethtool -K "+args.iface+" gro off")

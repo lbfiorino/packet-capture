@@ -12,7 +12,7 @@ def start_capture(section):
             pcapfile = host_ip+"_>_"+target_ip_port[0]+"_"+traffic_type+".pcap"
             CMD = "tcpdump -U -n -i enp0s3 -w "+pcapfile+" 'host "+target_ip_port[0]+" and host "+host_ip
             if (len(target_ip_port) == 2): 
-                CMD += " tcp port "+target_ip_port[1]+")' 2> /dev/null"
+                CMD += " and tcp port "+target_ip_port[1]+")' 2> /dev/null"
             else:
                 CMD += "' 2> /dev/null"
         
