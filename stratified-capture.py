@@ -44,27 +44,29 @@ os.setpgrp()
 proc = []
 
 # Load hosts and servers
-capture = configparser.ConfigParser()
-capture.read("capture.ini")
+captureConfig = configparser.ConfigParser()
+captureConfig.read("capture.ini")
 
 
 # Function to start the captures
 def start_capture(section):
-    for t in capture['target']:
-        target_ip_port = capture['target'][t].split(':')
-        for h in capture[section]:
-            host_ip = capture[section][h]
+    for t in captureConfig['target']:
+        target_ip_port = captureConfig['target'][t].split(':')
+        for h in captureConfig[section]:
+            host_ip = captureConfig[section][h]
             sep = "_port"
-            pcapfile = host_ip+"_to_"+sep.join(target_ip_port)+"_"+section+".pcap"
+            pcapfile = host_ip+"_to_"+sep.join(target_ip_port)+"_"+captureConfig['capture']['proto']+"_"+section+".pcap"
             CMD = "tcpdump -U -n -i "+args.iface+" -w "+pcapfile+" 'host "+target_ip_port[0]+" and host "+host_ip
-            if (len(target_ip_port) == 2): 
-                CMD += " and tcp port "+target_ip_port[1]+"' 2> /dev/null"
-            else:
-                CMD += "' 2> /dev/null"
+            if (captureConfig['capture']['proto']):
+                CMD += " and "+captureConfig['capture']['proto']
+                if (len(target_ip_port) == 2): 
+                    CMD += " port "+target_ip_port[1]         
+            
+            CMD += "' 2> /dev/null"
         
-            #print(CMD)
+            print(CMD)
             # Start tcpdump
-            proc.append(subprocess.Popen(CMD, shell=True, executable='/bin/bash'))
+            #proc.append(subprocess.Popen(CMD, shell=True, executable='/bin/bash'))
 
 
 # Check if network interface exist
