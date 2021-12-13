@@ -81,7 +81,7 @@ if not os.access(args.out_dir, os.W_OK):
     exit(1)    
 
 
-# Disable NIC Receive Offload
+# Disable NIC Send/Receive Offload
 os.system("ethtool -K "+args.iface+" gro off lro off tso off gso off ufo off")
 
 try: 
@@ -103,7 +103,7 @@ finally:
     # Kill all processes in group
     os.killpg(0, signal.SIGKILL)
 
-    # Enable NIC Receive Offload
+    # Enable NIC Send/Receive Offload
     os.system("ethtool -K "+args.iface+" gro on lro on tso on gso on ufo on")   
 
     exit()
