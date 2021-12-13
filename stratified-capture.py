@@ -82,9 +82,7 @@ if not os.access(args.out_dir, os.W_OK):
 
 
 # Disable NIC Receive Offload
-os.system("ethtool -K "+args.iface+" gro off")
-os.system("ethtool -K "+args.iface+" lro off")
-
+os.system("ethtool -K "+args.iface+" gro off lro off tso off gso off ufo off")
 
 try: 
     if (args.traffic_type == "all"):
@@ -106,7 +104,6 @@ finally:
     os.killpg(0, signal.SIGKILL)
 
     # Enable NIC Receive Offload
-    os.system("ethtool -K "+args.iface+" gro on")
-    os.system("ethtool -K "+args.iface+" lro on")    
+    os.system("ethtool -K "+args.iface+" gro on lro on tso on gso on ufo on")   
 
     exit()
